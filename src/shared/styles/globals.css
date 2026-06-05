@@ -1,1 +1,89 @@
 @import 'tailwindcss';
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
+@theme {
+  /* ── 배경 / 서피스 ── */
+  --color-cream: #f5f0e8;
+  --color-retro-gray: #ede7d9;
+
+  /* ── 보더 / 텍스트 ── */
+  --color-border: #b8afa7;
+  --color-ink-light: #7a6e66;
+  --color-ink-mid: #3d3028;
+  --color-ink: #1a1410;
+
+  /* ── 레인보우 스트라이프 (틸 → 레드) ── */
+  --color-stripe-teal: #5bc4c0;
+  --color-stripe-green: #5bad50;
+  --color-stripe-yellow: #e8c420;
+  --color-stripe-orange: #e8732a;
+  --color-stripe-red: #d94030;
+  --color-rust: #c44830;
+
+  /* ── 폰트 패밀리 ── */
+  --font-pretendard: 'Pretendard Variable', 'Pretendard', sans-serif;
+  --font-serif-kr: 'Noto Serif KR', serif;
+  --font-mono: 'Space Mono', monospace;
+
+  /* ── 타입 스케일 ── */
+  --text-display: 96px;
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-hero: 80px;
+  --text-hero--line-height: 1;
+  --text-hero--letter-spacing: -0.02em;
+
+  --text-poster: 64px;
+  --text-poster--line-height: 1;
+  --text-poster--letter-spacing: -0.02em;
+
+  --text-h2: 32px;
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-section: 24px;
+  --text-section--line-height: 1.2;
+  --text-section--letter-spacing: -0.01em;
+
+  --text-title: 20px;
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: -0.01em;
+
+  --text-body: 16px;
+  --text-body--line-height: 1.6;
+  --text-body--letter-spacing: -0.02em;
+
+  --text-caption: 14px;
+  --text-caption--line-height: 1.2;
+
+  --text-label: 10px;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.25em;
+}
+
+/* ── 기본 배경·텍스트 ── */
+@layer base {
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-pretendard);
+  }
+}
+
+/* ── 레인보우 대각 스트라이프 유틸리티 ── */
+@utility stripe-rainbow {
+  background-image: repeating-linear-gradient(
+    -24deg,
+    var(--color-stripe-teal) 0px,
+    var(--color-stripe-teal) 28px,
+    var(--color-stripe-green) 28px,
+    var(--color-stripe-green) 56px,
+    var(--color-stripe-yellow) 56px,
+    var(--color-stripe-yellow) 84px,
+    var(--color-stripe-orange) 84px,
+    var(--color-stripe-orange) 112px,
+    var(--color-stripe-red) 112px,
+    var(--color-stripe-red) 140px
+  );
+}

@@ -1,8 +1,24 @@
+import { Noto_Serif_KR, Space_Mono } from 'next/font/google';
+
 import type { Metadata } from 'next';
 
 import { TanStackProvider } from '@/shared/lib';
 
 import '@/shared/styles/globals.css';
+
+const notoSerifKr = Noto_Serif_KR({
+  subsets: ['latin'],
+  weight: ['300', '400', '600', '700', '900'],
+  variable: '--font-serif-kr',
+  display: 'swap',
+});
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'project-title',
@@ -16,7 +32,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="ko">
-      <body>
+      <body className={`${notoSerifKr.variable} ${spaceMono.variable}`}>
         <TanStackProvider>{children}</TanStackProvider>
       </body>
     </html>
