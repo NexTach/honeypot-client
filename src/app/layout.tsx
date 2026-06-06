@@ -3,6 +3,7 @@ import { Noto_Serif_KR, Space_Mono } from 'next/font/google';
 import type { Metadata } from 'next';
 
 import { TanStackProvider } from '@/shared/lib';
+import { Nav } from '@/widgets/nav';
 
 import '@/shared/styles/globals.css';
 
@@ -33,7 +34,10 @@ const RootLayout = ({
   return (
     <html lang="ko">
       <body className={`${notoSerifKr.variable} ${spaceMono.variable}`}>
-        <TanStackProvider>{children}</TanStackProvider>
+        <TanStackProvider>
+          <Nav />
+          {children}
+        </TanStackProvider>
       </body>
     </html>
   );
