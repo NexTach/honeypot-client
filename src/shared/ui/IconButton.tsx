@@ -42,6 +42,7 @@ const IconButton = ({ variant = 'sort', className, ...props }: IconButtonProps) 
       'border-ink flex h-[46px] items-center justify-center gap-[10px] border px-5',
       'font-pretendard text-body leading-none tracking-[-0.32px] transition-colors',
       'bg-cream text-ink hover:bg-retro-gray active:bg-ink active:text-cream',
+      'cursor-pointer disabled:cursor-not-allowed',
       className,
     )}
     {...props}

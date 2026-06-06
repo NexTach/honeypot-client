@@ -20,7 +20,7 @@ const TagChip = ({ label, onRemove, className }: TagChipProps) => (
       <button
         type="button"
         onClick={onRemove}
-        className="text-ink-disabled hover:text-ink flex size-4 items-center justify-center"
+        className="text-ink-disabled hover:text-ink flex size-4 cursor-pointer items-center justify-center"
         aria-label={`${label} 태그 제거`}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden>

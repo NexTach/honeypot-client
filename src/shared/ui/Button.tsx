@@ -14,6 +14,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         'border-ink flex w-full items-center justify-center border',
         'font-pretendard text-body leading-none tracking-[-0.32px]',
         'px-[115px] py-[15px] transition-colors',
+        'cursor-pointer disabled:cursor-not-allowed',
         confirmed ? 'bg-ink text-cream hover:bg-ink' : 'bg-cream text-ink hover:bg-retro-gray',
         className,
       )}

@@ -21,6 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           'font-pretendard text-body tracking-[-0.32px]',
           'bg-cream text-ink placeholder:text-ink-disabled',
           'focus:bg-retro-gray focus:outline-none',
+          'cursor-text disabled:cursor-not-allowed',
           error && 'bg-retro-gray',
         )}
         {...props}
