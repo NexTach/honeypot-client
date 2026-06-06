@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import { LogoLarge } from '@/shared/assets';
+import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 
 const PROBLEMS = [
@@ -86,9 +87,9 @@ const AboutPage = () => {
   return (
     <div className="border-border flex flex-col border-b">
       {/* ── 히어로 ── */}
-      <section className="bg-retro-gray border-border relative h-[640px] w-full overflow-hidden border-b">
-        {/* 레인보우 스트라이프 배경 */}
-        <div className="absolute top-[-211px] right-[530px] h-[1025px] w-[174px] -rotate-[24deg] opacity-80">
+      <section className="bg-retro-gray border-border relative w-full overflow-hidden border-b lg:h-[640px]">
+        {/* 레인보우 스트라이프 배경 — 데스크탑 전용 */}
+        <div className="absolute top-[-211px] right-[530px] hidden h-[1025px] w-[174px] -rotate-[24deg] opacity-80 lg:block">
           <div className="stripe-rainbow flex h-full w-full">
             <div className="bg-stripe-teal min-w-px flex-1" />
             <div className="bg-stripe-green min-w-px flex-1" />
@@ -98,8 +99,20 @@ const AboutPage = () => {
           </div>
         </div>
 
-        {/* 카세트 테이프 — 메인 */}
-        <div className="absolute top-[119px] right-[94px] h-[378px] w-[553px] rotate-[2.08deg]">
+        {/* 카세트 테이프 — 모바일 (정적 배치) */}
+        <div className="relative mx-auto mt-10 h-[200px] w-4/5 max-w-[340px] lg:hidden">
+          <Image
+            src="/images/CassetteTape.png"
+            alt="카세트 테이프"
+            fill
+            sizes="340px"
+            className="object-contain"
+            priority
+          />
+        </div>
+
+        {/* 카세트 테이프 — 데스크탑 (절대 배치) */}
+        <div className="absolute top-[119px] right-[94px] hidden h-[378px] w-[553px] rotate-[2.08deg] lg:block">
           <Image
             src="/images/CassetteTape.png"
             alt="카세트 테이프"
@@ -110,25 +123,25 @@ const AboutPage = () => {
           />
         </div>
 
-        {/* 좌측 콘텐츠 */}
-        <div className="absolute top-1/2 left-[144px] flex w-[424px] -translate-y-1/2 flex-col gap-12">
+        {/* 콘텐츠 */}
+        <div className="flex flex-col gap-8 px-5 py-10 sm:px-12 sm:py-12 lg:absolute lg:top-1/2 lg:left-[144px] lg:w-[424px] lg:-translate-y-1/2 lg:gap-12 lg:px-0 lg:py-0">
           <div className="flex flex-col gap-4">
-            <h1 className="font-pretendard text-poster text-ink leading-none font-black tracking-[-0.02em]">
+            <h1 className="font-pretendard text-ink lg:text-poster text-[40px] leading-none font-black tracking-[-0.02em] sm:text-[52px]">
               추억의 저장소
             </h1>
             <p className="font-pretendard text-body text-ink leading-[1.6] tracking-[-0.02em]">
               꿀통은 학생들이 만든 GIF를 디스코드 링크 만료와 무관하게 보존하고,
-              <br />
+              <br className="hidden lg:block" />
               태그 기반 검색을 통해 쉽게 재사용할 수 있도록 돕는 서비스입니다.
             </p>
           </div>
-          <Button className="w-auto px-8">꿀통 시작하기</Button>
+          <Button className="w-full px-8 sm:w-auto">꿀통 시작하기</Button>
         </div>
       </section>
 
       {/* ── 섹션2: 꿀통은 왜? ── */}
-      <section className="border-border bg-cream flex flex-col gap-[120px] border-b px-[144px] py-[208px]">
-        <div className="flex w-[1152px] flex-col gap-5">
+      <section className="border-border bg-cream flex flex-col gap-12 border-b px-5 py-16 sm:px-12 sm:py-20 lg:gap-[120px] lg:px-[144px] lg:py-[208px]">
+        <div className="flex w-full flex-col gap-5">
           <h2 className="font-serif-kr text-h2 text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
             꿀통은 왜 만들어졌을까요?
           </h2>
@@ -137,12 +150,12 @@ const AboutPage = () => {
           </p>
         </div>
 
-        <div className="flex h-[188px] w-full flex-col items-end justify-center">
+        <div className="flex w-full flex-col justify-center lg:h-[188px] lg:items-end">
           <div className="flex flex-col gap-5">
             <h3 className="font-serif-kr text-section text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
               학생들의 소통 창구
             </h3>
-            <p className="font-serif-kr text-body text-ink w-[599px] text-justify leading-[1.6] tracking-[-0.02em]">
+            <p className="font-serif-kr text-body text-ink w-full text-justify leading-[1.6] tracking-[-0.02em] lg:w-[599px]">
               <strong className="font-bold">GSM 학생들은 매일 디스코드에서 소통합니다.</strong>
               {` 프로젝트 협업, 과제 질문, 일상 대화까지 모든 것이 디스코드에서 이루어지죠. 그리고 우리는 말보다 GIF로 감정을 표현하는 걸 좋아합니다. "ㅋㅋㅋ" 대신 웃는 GIF를, "대박" 대신 놀라는 GIF를 보냅니다. 선배들이 만든 재미있는 반응, 학교 행사 영상에서 캡처한 명장면들... 심지어 고양이 밈까지. 이런 `}
               <strong className="font-bold">
@@ -152,14 +165,14 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <h3 className="font-serif-kr text-section text-ink w-[1152px] leading-[1.2] font-semibold tracking-[-0.01em]">
+        <h3 className="font-serif-kr text-section text-ink w-full leading-[1.2] font-semibold tracking-[-0.01em]">
           그러나, 문제가 발생했습니다.
         </h3>
       </section>
 
       {/* ── 섹션3: 문제 ── */}
-      <section className="border-border bg-retro-gray border-b px-[144px] py-[120px]">
-        <div className="grid grid-cols-2 gap-8">
+      <section className="border-border bg-retro-gray border-b px-5 py-12 sm:px-12 lg:px-[144px] lg:py-[120px]">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
           {PROBLEMS.map(({ title, desc }) => (
             <div key={title} className="flex flex-col gap-2">
               <h3 className="font-serif-kr text-section text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
@@ -174,10 +187,10 @@ const AboutPage = () => {
       </section>
 
       {/* ── 섹션4: 해결 ── */}
-      <section className="border-border flex h-[640px] items-center border-b px-[144px]">
-        <div className="flex w-full items-center justify-between pr-[194px]">
-          <div className="flex w-[646px] flex-col gap-5">
-            <h2 className="font-serif-kr text-h2 text-ink w-[598px] leading-[1.2] font-semibold tracking-[-0.01em]">
+      <section className="border-border border-b px-5 py-12 sm:px-12 lg:flex lg:h-[640px] lg:items-center lg:px-[144px] lg:py-0">
+        <div className="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:pr-[194px]">
+          <div className="flex w-full flex-col gap-5 lg:w-[646px]">
+            <h2 className="font-serif-kr text-h2 text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
               그래서, 꿀통을 만들었습니다.
             </h2>
             <div className="font-serif-kr text-body text-ink space-y-4 text-justify leading-[1.6] tracking-[-0.02em]">
@@ -197,17 +210,19 @@ const AboutPage = () => {
           </div>
 
           {/* 꿀통 브랜드 마크 */}
-          <LogoLarge />
+          <div className="flex justify-center lg:flex-shrink-0">
+            <LogoLarge />
+          </div>
         </div>
       </section>
 
       {/* ── 주요 기능 ── */}
-      <section className="border-border bg-retro-gray border-b px-[144px] py-[120px]">
-        <div className="flex w-[1152px] flex-col gap-[60px]">
+      <section className="border-border bg-retro-gray border-b px-5 py-12 sm:px-12 lg:px-[144px] lg:py-[120px]">
+        <div className="flex w-full flex-col gap-8 lg:gap-[60px]">
           <h2 className="font-serif-kr text-h2 text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
             주요 기능
           </h2>
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             {FEATURES.map(({ title, desc }) => (
               <div key={title} className="flex flex-col gap-2">
                 <h3 className="font-serif-kr text-section text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
@@ -223,8 +238,8 @@ const AboutPage = () => {
       </section>
 
       {/* ── 이용 안내 ── */}
-      <section className="border-border border-b px-[144px] py-[120px]">
-        <div className="flex w-full flex-col gap-[60px]">
+      <section className="border-border border-b px-5 py-12 sm:px-12 lg:px-[144px] lg:py-[120px]">
+        <div className="flex w-full flex-col gap-8 lg:gap-[60px]">
           <h2 className="font-pretendard text-h2 text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
             이용 안내
           </h2>
@@ -244,8 +259,8 @@ const AboutPage = () => {
       </section>
 
       {/* ── 꿀통이 꿈꾸는 미래 ── */}
-      <section className="border-border bg-retro-gray border-b px-[144px] py-[208px]">
-        <div className="flex w-[1152px] flex-col gap-[120px]">
+      <section className="border-border bg-retro-gray border-b px-5 py-16 sm:px-12 sm:py-20 lg:px-[144px] lg:py-[208px]">
+        <div className="flex w-full flex-col gap-12 lg:gap-[120px]">
           <div className="flex flex-col gap-5">
             <h2 className="font-serif-kr text-h2 text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
               꿀통이 꿈꾸는 미래
@@ -256,7 +271,10 @@ const AboutPage = () => {
           </div>
 
           {FUTURE.map(({ title, desc, end }) => (
-            <div key={title} className={`flex w-[599px] flex-col gap-5 ${end ? 'self-end' : ''}`}>
+            <div
+              key={title}
+              className={cn('flex w-full flex-col gap-5 lg:w-[599px]', end && 'lg:self-end')}
+            >
               <h3 className="font-serif-kr text-section text-ink leading-[1.2] font-semibold tracking-[-0.01em]">
                 {title}
               </h3>
@@ -269,11 +287,11 @@ const AboutPage = () => {
       </section>
 
       {/* ── 푸터 ── */}
-      <footer className="border-border bg-cream flex items-center justify-between border-b px-[144px] py-4">
+      <footer className="border-border bg-cream flex flex-col gap-4 border-b px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-12 lg:px-[144px] lg:py-4">
         <p className="text-caption text-ink font-mono leading-none uppercase">
           © 2026 꿀통 - GSM GIF Archive Service
         </p>
-        <Button className="w-auto px-8">꿀통 시작하기</Button>
+        <Button className="w-full px-8 sm:w-auto">꿀통 시작하기</Button>
       </footer>
     </div>
   );
