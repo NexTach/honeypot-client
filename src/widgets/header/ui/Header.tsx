@@ -21,7 +21,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-border bg-cream border-b">
+    <header className="border-border bg-cream z-50 border-b">
       {/* 상단 바 */}
       <div className="flex items-center justify-between px-5 py-4 sm:px-12 lg:px-36">
         <Link href="/">
