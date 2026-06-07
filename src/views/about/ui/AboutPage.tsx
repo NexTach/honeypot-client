@@ -87,9 +87,9 @@ const AboutPage = () => {
   return (
     <div className="border-border flex flex-col border-b">
       {/* ── 히어로 ── */}
-      <section className="bg-retro-gray border-border relative w-full overflow-hidden border-b lg:h-[640px]">
+      <section className="bg-retro-gray border-border relative min-h-[calc(100vh-69px)] w-full overflow-hidden border-b">
         {/* 레인보우 스트라이프 배경 — 데스크탑 전용 */}
-        <div className="absolute top-[-211px] right-[530px] hidden h-[1025px] w-[174px] -rotate-[24deg] opacity-80 lg:block">
+        <div className="absolute top-[-100px] right-[470px] hidden h-[150vh] w-[174px] -rotate-[24deg] opacity-80 lg:block">
           <div className="stripe-rainbow flex h-full w-full">
             <div className="bg-stripe-teal min-w-px flex-1" />
             <div className="bg-stripe-green min-w-px flex-1" />
@@ -112,7 +112,7 @@ const AboutPage = () => {
         </div>
 
         {/* 카세트 테이프 — 데스크탑 (절대 배치) */}
-        <div className="absolute top-[119px] right-[94px] hidden h-[378px] w-[553px] rotate-[2.08deg] lg:block">
+        <div className="absolute top-[250px] right-[94px] hidden h-[378px] w-[553px] rotate-[2.08deg] lg:block">
           <Image
             src="/images/CassetteTape.png"
             alt="카세트 테이프"
