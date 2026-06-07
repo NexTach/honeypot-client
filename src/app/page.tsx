@@ -1,7 +1,5 @@
-import { HomePage } from '@/views/home';
+import { ExplorePage } from '@/views/home';
 
-const Home = () => {
-  return <HomePage />;
-};
+const Home = () => <ExplorePage />;
 
 export default Home;
