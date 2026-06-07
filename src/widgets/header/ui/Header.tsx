@@ -16,12 +16,12 @@ const NAV_ITEMS = [
   { href: '/login', label: '로그인' },
 ] as const;
 
-const Nav = () => {
+const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="border-border bg-cream border-b">
+    <header className="border-border bg-cream border-b">
       {/* 상단 바 */}
       <div className="flex items-center justify-between px-5 py-4 sm:px-12 lg:px-36">
         <Link href="/">
@@ -29,13 +29,13 @@ const Nav = () => {
         </Link>
 
         {/* 데스크탑 메뉴 */}
-        <div className="hidden items-center gap-8 sm:flex">
+        <nav className="hidden items-center gap-8 sm:flex">
           {NAV_ITEMS.map(({ href, label }) => (
             <Link key={href} href={href}>
               <TextButton active={pathname === href}>{label}</TextButton>
             </Link>
           ))}
-        </div>
+        </nav>
 
         {/* 햄버거 버튼 */}
         <button
@@ -68,17 +68,17 @@ const Nav = () => {
       {/* 모바일 드롭다운 */}
       {open && (
         <div className="border-border border-t px-5 py-6 sm:hidden">
-          <div className="flex flex-col gap-4">
+          <nav className="flex flex-col gap-4">
             {NAV_ITEMS.map(({ href, label }) => (
               <Link key={href} href={href} onClick={() => setOpen(false)}>
                 <TextButton active={pathname === href}>{label}</TextButton>
               </Link>
             ))}
-          </div>
+          </nav>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 
-export default Nav;
+export default Header;
