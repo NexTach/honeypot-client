@@ -14,6 +14,8 @@ const dummyGif: Gif = {
   shareCount: 123,
   url: 'https://ggultong.kr/gif/abc123.gif',
   isPublic: true,
+  createdAt: '2024. 03. 22',
+  viewCount: 789,
 };
 
 const Page = () => <GifDetailPage gif={dummyGif} isOwner={false} />;

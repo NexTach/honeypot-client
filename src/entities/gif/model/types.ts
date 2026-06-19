@@ -10,4 +10,6 @@ export interface Gif {
   shareCount: number;
   url: string;
   isPublic: boolean;
+  createdAt: string;
+  viewCount: number;
 }
