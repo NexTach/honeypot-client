@@ -81,7 +81,9 @@
   /* ── 보더 / 텍스트 ── */
   --color-border: #b8afa7;
   --color-ink-light: #7a6e66;
+  --color-ink-soft: #635b5b;
   --color-ink-mid: #3d3028;
+  --color-ink-faint: #d4b9a7;
   --color-ink: #1a1410;
 
   /* ── 레인보우 스트라이프 (틸 → 레드) ── */
