@@ -2,30 +2,32 @@
 
 import { useMemo, useState } from 'react';
 
-import Link from 'next/link';
-
 import { type Gif, GifListItem } from '@/entities/gif';
-import { type User, UserStats } from '@/entities/user';
+import { type Report, ReportStats, RESOLUTION_LABELS } from '@/entities/report';
 import { cn } from '@/shared/lib';
-import { Button } from '@/shared/ui';
+import { Button, IconButton } from '@/shared/ui';
 
-interface MyPageProps {
-  user: User;
-  gifs: Gif[];
+export interface ReportItem {
+  report: Report;
+  gif: Gif;
 }
 
-type FilterKey = 'all' | 'public' | 'private';
-type SortKey = 'popular' | 'recent';
+interface ReportManagementPageProps {
+  items: ReportItem[];
+}
+
+type FilterKey = 'pending' | 'resolved' | 'all';
+type SortKey = 'recent' | 'oldest';
 
 const FILTER_LABELS: Record<FilterKey, string> = {
+  pending: '대기 중',
+  resolved: '처리 완료',
   all: '전체',
-  public: '공개',
-  private: '비공개',
 };
 
 const SORT_LABELS: Record<SortKey, string> = {
-  popular: '인기순',
   recent: '최신순',
+  oldest: '오래된순',
 };
 
 const ChevronDownIcon = () => (
@@ -34,9 +36,9 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-const PublicBadge = ({ isPublic }: { isPublic: boolean }) => (
+const StatusBadge = ({ report }: { report: Report }) => (
   <span className="border-ink-disabled text-ink-disabled font-pretendard text-body shrink-0 border px-5 py-[15px] leading-none tracking-[-0.32px]">
-    {isPublic ? '공개' : '비공개'}
+    {report.status === 'pending' ? '대기 중' : RESOLUTION_LABELS[report.resolution ?? 'none']}
   </span>
 );
 
@@ -90,58 +92,40 @@ const SortDropdown = ({
   );
 };
 
-const MyPage = ({ user, gifs }: MyPageProps) => {
-  const [filter, setFilter] = useState<FilterKey>('all');
-  const [sort, setSort] = useState<SortKey>('popular');
+const ReportManagementPage = ({ items }: ReportManagementPageProps) => {
+  const [filter, setFilter] = useState<FilterKey>('pending');
+  const [sort, setSort] = useState<SortKey>('recent');
 
-  const visibleGifs = useMemo(() => {
-    const filtered = gifs.filter((gif) => {
-      if (filter === 'public') return gif.isPublic;
-      if (filter === 'private') return !gif.isPublic;
+  const pendingCount = items.filter((item) => item.report.status === 'pending').length;
+
+  const visibleItems = useMemo(() => {
+    const filtered = items.filter((item) => {
+      if (filter === 'pending') return item.report.status === 'pending';
+      if (filter === 'resolved') return item.report.status === 'resolved';
       return true;
     });
 
-    return [...filtered].sort((a, b) =>
-      sort === 'popular' ? b.viewCount - a.viewCount : b.createdAt.localeCompare(a.createdAt),
-    );
-  }, [gifs, filter, sort]);
+    return [...filtered].sort((a, b) => {
+      const diff = a.report.reportedAt.localeCompare(b.report.reportedAt);
+      return sort === 'recent' ? -diff : diff;
+    });
+  }, [items, filter, sort]);
 
   return (
     <main className="bg-cream min-h-[calc(100vh-69px)] px-5 py-10 sm:px-12 lg:px-36">
-      <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-10">
-        {/* 헤더: 제목 + 통계 + 액션 */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex flex-col gap-2">
-            <h1 className="font-pretendard text-h2 text-ink font-semibold tracking-[-1px]">
-              내 꿀통
-            </h1>
-            <UserStats user={user} />
-          </div>
+      <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-8">
+        <IconButton variant="back" className="w-fit" onClick={() => window.history.back()} />
 
-          <div className="flex shrink-0 gap-2">
-            {user.isAdmin && (
-              <Link
-                href="/my-page/reports"
-                className={cn(
-                  'border-stripe-red text-stripe-red border px-5 py-[15px]',
-                  'font-pretendard text-body leading-none tracking-[-0.32px] transition-colors',
-                  'hover:bg-stripe-red hover:text-cream cursor-pointer',
-                )}
-              >
-                신고 관리
-              </Link>
-            )}
-            <button
-              type="button"
-              className={cn(
-                'border-ink text-ink bg-cream border px-5 py-[15px]',
-                'font-pretendard text-body leading-none tracking-[-0.32px] transition-colors',
-                'hover:bg-retro-gray cursor-pointer',
-              )}
-            >
-              로그아웃
-            </button>
-          </div>
+        {/* 제목 + 통계 */}
+        <div className="flex flex-col gap-2">
+          <h1 className="font-pretendard text-h2 text-ink font-semibold tracking-[-1px]">
+            신고 관리
+          </h1>
+          <ReportStats
+            pendingCount={pendingCount}
+            resolvedCount={items.length - pendingCount}
+            totalCount={items.length}
+          />
         </div>
 
         {/* 필터 탭 + 정렬 */}
@@ -162,13 +146,14 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
           <SortDropdown value={sort} onChange={setSort} />
         </div>
 
-        {/* GIF 리스트 */}
+        {/* 신고 리스트 */}
         <div className="flex flex-col">
-          {visibleGifs.map((gif) => (
+          {visibleItems.map((item) => (
             <GifListItem
-              key={gif.id}
-              gif={gif}
-              rightSlot={<PublicBadge isPublic={gif.isPublic} />}
+              key={item.report.id}
+              gif={item.gif}
+              href={`/my-page/reports/${item.report.id}`}
+              rightSlot={<StatusBadge report={item.report} />}
             />
           ))}
         </div>
@@ -177,4 +162,4 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
   );
 };
 
-export default MyPage;
+export default ReportManagementPage;

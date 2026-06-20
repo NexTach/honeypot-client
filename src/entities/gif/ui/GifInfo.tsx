@@ -2,15 +2,18 @@ import type { Gif } from '../model/types';
 
 interface GifInfoProps {
   gif: Gif;
+  showShareCount?: boolean;
 }
 
-const GifInfo = ({ gif }: GifInfoProps) => (
+const GifInfo = ({ gif, showShareCount = true }: GifInfoProps) => (
   <div className="flex flex-col gap-4">
     <div className="flex items-start justify-between gap-4">
       <h1 className="font-pretendard text-h2 text-ink font-bold">{gif.title}</h1>
-      <span className="font-pretendard text-caption text-ink-disabled shrink-0">
-        공유 {gif.shareCount}회
-      </span>
+      {showShareCount && (
+        <span className="font-pretendard text-caption text-ink-disabled shrink-0">
+          공유 {gif.shareCount}회
+        </span>
+      )}
     </div>
 
     {gif.description && (
