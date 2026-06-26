@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 
+import { startSignIn } from '@/features/oauth-sign-in';
 import { DataGSMLogo } from '@/shared/assets';
 
 const LoginPage = () => (
@@ -62,6 +65,7 @@ const LoginPage = () => (
       {/* DataGSM 로그인 버튼 */}
       <button
         type="button"
+        onClick={() => void startSignIn()}
         className="border-ink bg-cream font-pretendard text-body text-ink hover:bg-retro-gray flex h-[46px] w-full cursor-pointer items-center justify-center gap-[10px] overflow-hidden border px-8 tracking-[-0.32px] transition-colors lg:px-[115px]"
       >
         <DataGSMLogo />

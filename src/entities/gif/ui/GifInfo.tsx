@@ -22,13 +22,13 @@ const GifInfo = ({ gif, showShareCount = true }: GifInfoProps) => (
 
     <div className="flex flex-col gap-1">
       <p className="text-ink-disabled font-mono text-base">
-        {gif.tags.map((tag) => `#${tag}`).join(' ')}
+        {gif.tags.map((tag) => `#${tag.name}`).join(' ')}
       </p>
       <div className="flex items-center justify-between gap-4">
         <span className="text-caption text-ink-faint font-mono">
-          {gif.width}*{gif.height} · LOOP({gif.loop ? '→' : '—'})
+          {gif.width && gif.height ? `${gif.width}*${gif.height}` : ''}
         </span>
-        <span className="font-pretendard text-caption text-ink-faint">{gif.uploader}</span>
+        <span className="font-pretendard text-caption text-ink-faint">{gif.uploaderName}</span>
       </div>
     </div>
   </div>

@@ -1,0 +1,18 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+
+import { queryKeys } from '@/shared/api';
+
+import { getMyProfile } from '../api/userApi';
+import type { Profile } from './types';
+
+export const useGetMyProfile = (initialData?: Profile) =>
+  useQuery({
+    queryKey: queryKeys.users.me,
+    queryFn: getMyProfile,
+    initialData,
+    // 미인증(401)은 정상 상태 — 재시도/스팸 방지.
+    retry: false,
+    staleTime: 60_000,
+  });

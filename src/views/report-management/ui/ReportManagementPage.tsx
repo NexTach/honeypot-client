@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 
 import { type Gif, GifListItem } from '@/entities/gif';
-import { type Report, ReportStats, RESOLUTION_LABELS } from '@/entities/report';
+import { type Report, ReportStats, STATUS_LABELS } from '@/entities/report';
 import { cn } from '@/shared/lib';
 import { Button, IconButton } from '@/shared/ui';
 
@@ -38,7 +38,7 @@ const ChevronDownIcon = () => (
 
 const StatusBadge = ({ report }: { report: Report }) => (
   <span className="border-ink-disabled text-ink-disabled font-pretendard text-body shrink-0 border px-5 py-[15px] leading-none tracking-[-0.32px]">
-    {report.status === 'pending' ? '대기 중' : RESOLUTION_LABELS[report.resolution ?? 'none']}
+    {STATUS_LABELS[report.status]}
   </span>
 );
 
@@ -96,17 +96,17 @@ const ReportManagementPage = ({ items }: ReportManagementPageProps) => {
   const [filter, setFilter] = useState<FilterKey>('pending');
   const [sort, setSort] = useState<SortKey>('recent');
 
-  const pendingCount = items.filter((item) => item.report.status === 'pending').length;
+  const pendingCount = items.filter((item) => item.report.status === 'PENDING').length;
 
   const visibleItems = useMemo(() => {
     const filtered = items.filter((item) => {
-      if (filter === 'pending') return item.report.status === 'pending';
-      if (filter === 'resolved') return item.report.status === 'resolved';
+      if (filter === 'pending') return item.report.status === 'PENDING';
+      if (filter === 'resolved') return item.report.status !== 'PENDING';
       return true;
     });
 
     return [...filtered].sort((a, b) => {
-      const diff = a.report.reportedAt.localeCompare(b.report.reportedAt);
+      const diff = a.report.createdAt.localeCompare(b.report.createdAt);
       return sort === 'recent' ? -diff : diff;
     });
   }, [items, filter, sort]);

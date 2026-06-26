@@ -1,8 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { cn } from '@/shared/lib';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
+import { type GifUploadFormValues, gifUploadSchema, usePostGif } from '@/features/gif-upload';
+import { cn, parseTags } from '@/shared/lib';
 import { Button, Input } from '@/shared/ui';
 
 const ImageOutlineIcon = () => (
@@ -19,23 +23,59 @@ const ImageOutlineIcon = () => (
 );
 
 const UploadPage = () => {
-  const [isPublic, setIsPublic] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<GifUploadFormValues>({
+    resolver: zodResolver(gifUploadSchema),
+    defaultValues: { title: '', description: '', tagsInput: '', isPublic: true },
+  });
+
+  const postGif = usePostGif();
+  const file = watch('file');
+  const isPublic = watch('isPublic');
+
+  // 미리보기 object URL — 언마운트/파일 변경 시 해제.
+  useEffect(() => {
+    if (!file) {
+      setPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const selectFile = (f?: File) => {
+    if (f) setValue('file', f, { shouldValidate: true });
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    selectFile(e.dataTransfer.files?.[0]);
   };
+
+  const onSubmit = handleSubmit((values) => {
+    postGif.mutate({
+      file: values.file,
+      title: values.title,
+      description: values.description,
+      isPublic: values.isPublic,
+      tags: parseTags(values.tagsInput),
+    });
+  });
 
   return (
     <main className="bg-cream min-h-[calc(100vh-69px)] px-5 py-10 sm:px-12 lg:flex lg:items-center lg:px-36 lg:py-0">
-      <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-2">
+      <form onSubmit={onSubmit} className="mx-auto flex w-full max-w-[1152px] flex-col gap-2">
         <h1 className="font-pretendard text-title text-ink font-normal tracking-[-1px]">
           GIF 업로드
         </h1>
@@ -45,27 +85,54 @@ const UploadPage = () => {
           <button
             type="button"
             className={cn(
-              'border-border bg-retro-gray flex w-full cursor-pointer flex-col items-center justify-center gap-[10px] border p-[10px]',
+              'border-border bg-retro-gray flex w-full cursor-pointer flex-col items-center justify-center gap-[10px] overflow-hidden border p-[10px]',
               'min-h-[260px] sm:min-h-[380px] lg:h-[650px] lg:w-[521px] lg:shrink-0',
               isDragging && 'border-ink',
+              errors.file && 'border-stripe-red',
             )}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             aria-label="GIF 파일 선택"
           >
-            <input ref={fileInputRef} type="file" accept="image/gif" className="hidden" />
-            <ImageOutlineIcon />
-            <p className="font-pretendard text-body text-ink-disabled text-center">
-              드래그 앤 드롭으로 GIF를 추가할 수 있습니다
-            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/gif"
+              className="hidden"
+              onChange={(e) => selectFile(e.target.files?.[0])}
+            />
+            {preview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={preview}
+                alt="업로드 미리보기"
+                className="max-h-full w-auto object-contain"
+              />
+            ) : (
+              <>
+                <ImageOutlineIcon />
+                <p className="font-pretendard text-body text-ink-disabled text-center">
+                  드래그 앤 드롭으로 GIF를 추가할 수 있습니다
+                </p>
+              </>
+            )}
           </button>
 
           {/* 폼 영역 */}
           <div className="flex w-full flex-col gap-8 lg:h-[650px] lg:w-[576px] lg:justify-between lg:gap-0">
             <div className="flex flex-col gap-4 sm:gap-6">
-              <Input label="이름*" placeholder="15자 이내로 입력해주세요" maxLength={15} />
+              <Input
+                label="이름*"
+                placeholder="15자 이내로 입력해주세요"
+                maxLength={15}
+                error={errors.title?.message}
+                {...register('title')}
+              />
 
               {/* 설명 — textarea */}
               <div className="flex w-full flex-col gap-1">
@@ -82,12 +149,14 @@ const UploadPage = () => {
                   )}
                   rows={4}
                   placeholder="GIF의 설명을 입력하세요"
+                  {...register('description')}
                 />
               </div>
 
               <Input
                 label="태그*"
                 placeholder="연관된 태그를 입력해주세요, # 또는 단어입력 후 띄어쓰기로 입력할 수 있습니다"
+                {...register('tagsInput')}
               />
 
               {/* 공개 여부 */}
@@ -97,15 +166,17 @@ const UploadPage = () => {
                 </span>
                 <div className="flex gap-3 sm:gap-4">
                   <Button
+                    type="button"
                     confirmed={isPublic}
-                    onClick={() => setIsPublic(true)}
+                    onClick={() => setValue('isPublic', true)}
                     className="flex-1 px-4 lg:px-[115px]"
                   >
                     공개
                   </Button>
                   <Button
+                    type="button"
                     confirmed={!isPublic}
-                    onClick={() => setIsPublic(false)}
+                    onClick={() => setValue('isPublic', false)}
                     className="flex-1 px-4 lg:px-[115px]"
                   >
                     비공개
@@ -114,10 +185,12 @@ const UploadPage = () => {
               </div>
             </div>
 
-            <Button className="mt-6 lg:mt-0">업로드하기</Button>
+            <Button type="submit" disabled={postGif.isPending} className="mt-6 lg:mt-0">
+              {postGif.isPending ? '업로드 중...' : '업로드하기'}
+            </Button>
           </div>
         </div>
-      </div>
+      </form>
     </main>
   );
 };

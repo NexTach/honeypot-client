@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import { type Gif, GifListItem } from '@/entities/gif';
 import { type User, UserStats } from '@/entities/user';
+import { useLogout } from '@/features/auth';
 import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui';
 
@@ -93,6 +94,7 @@ const SortDropdown = ({
 const MyPage = ({ user, gifs }: MyPageProps) => {
   const [filter, setFilter] = useState<FilterKey>('all');
   const [sort, setSort] = useState<SortKey>('popular');
+  const logout = useLogout();
 
   const visibleGifs = useMemo(() => {
     const filtered = gifs.filter((gif) => {
@@ -102,7 +104,7 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
     });
 
     return [...filtered].sort((a, b) =>
-      sort === 'popular' ? b.viewCount - a.viewCount : b.createdAt.localeCompare(a.createdAt),
+      sort === 'popular' ? b.likeCount - a.likeCount : b.createdAt.localeCompare(a.createdAt),
     );
   }, [gifs, filter, sort]);
 
@@ -133,10 +135,12 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
             )}
             <button
               type="button"
+              onClick={() => logout.mutate()}
+              disabled={logout.isPending}
               className={cn(
                 'border-ink text-ink bg-cream border px-5 py-[15px]',
                 'font-pretendard text-body leading-none tracking-[-0.32px] transition-colors',
-                'hover:bg-retro-gray cursor-pointer',
+                'hover:bg-retro-gray cursor-pointer disabled:cursor-not-allowed',
               )}
             >
               로그아웃

@@ -1,19 +1,47 @@
-export type ReportStatus = 'pending' | 'resolved';
+export type ReportStatus = 'PENDING' | 'NO_ISSUE' | 'BLINDED';
 
-export type Resolution = 'deleted' | 'hidden' | 'none';
+export type ReportAction = 'NO_ISSUE' | 'BLIND' | 'DELETE';
 
 export interface Report {
-  id: string;
-  reporter: string;
-  reason: string;
-  content: string;
+  id: number;
+  reporterId: number;
+  gifId: number;
+  reasonTitle: string;
+  detail: string;
   status: ReportStatus;
-  resolution?: Resolution;
-  reportedAt: string;
+  processedById: number | null;
+  processedAt: string | null;
+  createdAt: string;
 }
 
-export const RESOLUTION_LABELS: Record<Resolution, string> = {
-  deleted: 'GIF 삭제',
-  hidden: '비공개 처리',
-  none: '문제 없음',
+export interface ReportPage {
+  content: Report[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+}
+
+export interface CreateReportRequest {
+  reasonTitle: string;
+  detail: string;
+}
+
+export interface ProcessReportRequest {
+  action: ReportAction;
+}
+
+export const STATUS_LABELS: Record<ReportStatus, string> = {
+  PENDING: '대기 중',
+  NO_ISSUE: '문제 없음',
+  BLINDED: '비공개 처리',
+};
+
+export const ACTION_LABELS: Record<ReportAction, string> = {
+  NO_ISSUE: '문제 없음',
+  BLIND: '비공개 처리',
+  DELETE: 'GIF 삭제',
 };

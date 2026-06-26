@@ -1,33 +1,37 @@
+import { notFound } from 'next/navigation';
+
 import type { Gif } from '@/entities/gif';
-import type { Report } from '@/entities/report';
+import type { ReportPage } from '@/entities/report';
+import { requireAdmin } from '@/entities/user/api/guards';
+import { apiUrls } from '@/shared/api';
+import { apiFetcher } from '@/shared/api/fetcher';
 import { ReportDetailPage } from '@/views/report-detail';
 
-const dummyReport: Report = {
-  id: '1',
-  reporter: '앙승일',
-  reason: '내용과 GIF의 불일치',
-  content: '아니 도대체 왜 기니피그 GIF에 내 이름을 쓴거임??? (진자 모름)',
-  status: 'pending',
-  reportedAt: '2026. 06. 01',
-};
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-const dummyGif: Gif = {
-  id: 'g1',
-  title: '앙승일의 실체',
-  description:
-    '앙승일이 정재원을 고문하고 있는 모습이다. 이 고문법은 ‘프로메테우스 고문법’이라고 불리며, 손으로 흉부를 빠르게 여러 번 가격하는 고문법이다. 25년 1학기 서경주에게 베타테스트를 한 걸로 알려져 있으며 앙승일은 서경주에게 “너는 반성의 기미가 보이지 않는다”며 7분동안 고문을 진행하였다.',
-  tags: ['8기', '앙승일', '고문', '웃음', '한승일', '박승일'],
-  width: 251,
-  height: 341,
-  loop: true,
-  uploader: '서경주',
-  shareCount: 123,
-  url: 'https://ggultong.kr/gif/abc123.gif',
-  isPublic: true,
-  createdAt: '2026. 06. 01',
-  viewCount: 123,
-};
+const Page = async ({ params }: PageProps) => {
+  await requireAdmin();
+  const { id } = await params;
 
-const Page = () => <ReportDetailPage report={dummyReport} gif={dummyGif} />;
+  // ponytail: 신고 단건 엔드포인트 없음 → 목록에서 id로 검색.
+  const page = await apiFetcher<ReportPage>(`${apiUrls.reports.adminList}?size=1000`, {
+    context: 'getReports',
+    errorMessage: '신고 목록 조회 실패',
+    cache: 'no-store',
+  });
+  const report = page?.content.find((r) => r.id === Number(id));
+  if (!report) notFound();
+
+  const gif = await apiFetcher<Gif>(apiUrls.gifs.detail(report.gifId), {
+    context: 'getGif',
+    errorMessage: `GIF(${report.gifId}) 조회 실패`,
+    cache: 'no-store',
+  });
+  if (!gif) notFound();
+
+  return <ReportDetailPage report={report} gif={gif} />;
+};
 
 export default Page;

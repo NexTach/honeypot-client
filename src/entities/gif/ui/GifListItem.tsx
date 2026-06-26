@@ -20,7 +20,7 @@ const GifListItem = ({ gif, rightSlot, href }: GifListItemProps) => {
         <div className="flex flex-col gap-2 sm:gap-4">
           <p className="font-pretendard text-title text-ink">{gif.title}</p>
           <p className="text-caption text-ink-disabled font-mono uppercase">
-            {gif.createdAt} {'//'} 조회 {gif.viewCount}
+            {gif.createdAt} {'//'} 좋아요 {gif.likeCount}
           </p>
         </div>
 
