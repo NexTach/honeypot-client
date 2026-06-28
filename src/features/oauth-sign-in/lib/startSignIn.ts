@@ -1,22 +1,13 @@
-import { OAUTH_SESSION_KEYS } from '@/shared/constants';
-import { createAuthorizeUrl, generateCodeChallenge, generateCodeVerifier } from '@/shared/lib';
-
 /**
- * DataGSM OAuth 시작. 클라가 PKCE(state+verifier+challenge) 생성 →
- * sessionStorage 저장 → DataGSM authorize로 직접 리다이렉트.
+ * DataGSM OAuth 시작 (백엔드 주도 흐름).
+ * 백엔드 `/v1/auth/datagsm/login` 으로 전체 페이지 이동 → 백엔드가 PKCE/state 를
+ * HttpOnly 쿠키로 처리하고 DataGSM 으로 리다이렉트한다. 로그인 완료 후 백엔드가
+ * `redirect_uri#accessToken=...` 형태로 프론트 콜백으로 302 리다이렉트한다.
  */
-export const startSignIn = async (): Promise<void> => {
-  const clientId = process.env.NEXT_PUBLIC_DATAGSM_OAUTH_CLIENT_ID;
-  if (!clientId)
-    throw new Error('OAuth 환경 변수(NEXT_PUBLIC_DATAGSM_OAUTH_CLIENT_ID)가 없습니다.');
+export const startSignIn = (): void => {
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!apiBaseUrl) throw new Error('API 환경 변수(NEXT_PUBLIC_API_BASE_URL)가 없습니다.');
 
   const redirectUri = `${window.location.origin}/callback`;
-  const state = crypto.randomUUID();
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-  sessionStorage.setItem(OAUTH_SESSION_KEYS.STATE, state);
-  sessionStorage.setItem(OAUTH_SESSION_KEYS.CODE_VERIFIER, codeVerifier);
-
-  window.location.href = createAuthorizeUrl({ clientId, redirectUri, state, codeChallenge });
+  window.location.href = `${apiBaseUrl}/v1/auth/datagsm/login?redirect_uri=${encodeURIComponent(redirectUri)}`;
 };

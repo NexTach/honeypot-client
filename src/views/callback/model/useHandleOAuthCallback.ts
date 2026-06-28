@@ -2,57 +2,41 @@
 
 import { useEffect, useState } from 'react';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-import { useSignIn } from '@/features/oauth-sign-in';
-import { COOKIE_KEYS, OAUTH_SESSION_KEYS } from '@/shared/constants';
+import { COOKIE_KEYS } from '@/shared/constants';
 import { setCookie } from '@/shared/lib';
 
+/**
+ * 백엔드 주도 OAuth 콜백 처리.
+ * 백엔드가 로그인 완료 후 `{redirect_uri}#accessToken=...` 로 302 리다이렉트하므로,
+ * URL fragment(location.hash)에서 accessToken 을 꺼내 쿠키에 저장한다.
+ */
 export const useHandleOAuthCallback = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { mutateAsync: signIn } = useSignIn();
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleOAuthCallback = async () => {
+    const handleCallback = () => {
       try {
-        const code = searchParams.get('code');
-        const callbackState = searchParams.get('state');
-        const redirectUri = `${window.location.origin}/callback`;
+        const hash = window.location.hash.startsWith('#')
+          ? window.location.hash.slice(1)
+          : window.location.hash;
+        const accessToken = new URLSearchParams(hash).get('accessToken');
 
-        if (!code) throw new Error('인가 코드가 누락되었습니다.');
-
-        const savedState = sessionStorage.getItem(OAUTH_SESSION_KEYS.STATE);
-        if (!savedState || callbackState !== savedState) {
-          throw new Error('잘못된 인증 요청입니다. 다시 로그인해주세요.');
-        }
-
-        const codeVerifier = sessionStorage.getItem(OAUTH_SESSION_KEYS.CODE_VERIFIER);
-        if (!codeVerifier) throw new Error('PKCE 검증 정보가 없습니다. 다시 로그인해주세요.');
-
-        const { accessToken } = await signIn({
-          code,
-          state: callbackState,
-          oauthState: savedState,
-          codeVerifier,
-          redirectUri,
-        });
+        if (!accessToken) throw new Error('로그인 토큰을 받지 못했습니다. 다시 로그인해주세요.');
 
         setCookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken);
+        // 토큰이 노출된 fragment 를 히스토리에서 제거하며 홈으로 이동.
         router.replace('/');
       } catch (error) {
         setErrorMessage(error instanceof Error ? error.message : '로그인 중 오류가 발생했습니다.');
         setTimeout(() => router.replace('/login'), 3000);
-      } finally {
-        sessionStorage.removeItem(OAUTH_SESSION_KEYS.STATE);
-        sessionStorage.removeItem(OAUTH_SESSION_KEYS.CODE_VERIFIER);
       }
     };
 
-    void handleOAuthCallback();
-  }, [router, searchParams, signIn]);
+    handleCallback();
+  }, [router]);
 
   return { errorMessage };
 };
