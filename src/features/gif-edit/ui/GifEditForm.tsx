@@ -79,7 +79,7 @@ const GifEditForm = ({ gif, onClose }: GifEditFormProps) => {
               type="button"
               confirmed={isPublic}
               onClick={() => setValue('isPublic', true)}
-              className="flex-1 px-4 lg:px-[115px]"
+              className="flex-1 px-4 whitespace-nowrap"
             >
               공개
             </Button>
@@ -87,7 +87,7 @@ const GifEditForm = ({ gif, onClose }: GifEditFormProps) => {
               type="button"
               confirmed={!isPublic}
               onClick={() => setValue('isPublic', false)}
-              className="flex-1 px-4 lg:px-[115px]"
+              className="flex-1 px-4 whitespace-nowrap"
             >
               비공개
             </Button>
