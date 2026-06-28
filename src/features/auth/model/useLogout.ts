@@ -17,6 +17,7 @@ export const useLogout = () => {
     mutationFn: () => post(apiUrls.auth.logout).catch(() => undefined),
     onSettled: () => {
       deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
+      deleteCookie(COOKIE_KEYS.REFRESH_TOKEN);
       queryClient.clear();
       router.replace('/login');
     },
