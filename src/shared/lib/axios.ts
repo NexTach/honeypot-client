@@ -23,7 +23,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     if (response.status >= 200 && response.status < 300) {
-      return response.data;
+      // the-sdk가 모든 응답을 CommonApiResponse{status,code,message,data}로 래핑하므로
+      // 실제 페이로드(data)만 꺼내 반환. 204/void 응답은 undefined.
+      return response.data?.data ?? response.data;
     }
     return Promise.reject(response.data);
   },

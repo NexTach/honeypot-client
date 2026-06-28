@@ -39,7 +39,9 @@ export const apiFetcher = async <T>(
       return undefined;
     }
 
-    return (await res.json()) as T;
+    // the-sdk가 CommonApiResponse{status,code,message,data}로 래핑 → 페이로드(data)만 반환.
+    const json = await res.json();
+    return (json?.data ?? json) as T;
   } catch (error) {
     console.error(`[apiFetcher:${context}] ${errorMessage}`, error);
     return undefined;
