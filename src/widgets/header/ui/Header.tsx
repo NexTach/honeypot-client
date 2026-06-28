@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,7 +8,8 @@ import { usePathname } from 'next/navigation';
 import { useGetMyProfile } from '@/entities/user';
 import { useLogout } from '@/features/auth';
 import { Logo } from '@/shared/assets';
-import { cn } from '@/shared/lib';
+import { COOKIE_KEYS } from '@/shared/constants';
+import { cn, getCookie } from '@/shared/lib';
 import { TextButton } from '@/shared/ui';
 
 const BASE_NAV = [
@@ -21,16 +22,26 @@ const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const { data: profile } = useGetMyProfile();
+  // 쿠키로 로그인 판정. 외부 소스(document.cookie)라 useSyncExternalStore로 읽어
+  // SSR(false)→클라 하이드레이션 미스매치 회피. 리렌더(라우트 변경)마다 재평가.
+  const isLoggedIn = useSyncExternalStore(
+    () => () => {},
+    () => !!getCookie(COOKIE_KEYS.ACCESS_TOKEN),
+    () => false,
+  );
+
+  const { data: profile } = useGetMyProfile(undefined, isLoggedIn);
   const logout = useLogout();
-  const isLoggedIn = !!profile;
   const isAdmin = profile?.role === 'ADMIN';
 
-  const navItems = [
-    ...BASE_NAV,
-    ...(isLoggedIn ? [{ href: '/my-page', label: '마이페이지' }] : []),
-    ...(isAdmin ? [{ href: '/my-page/reports', label: '신고관리' }] : []),
-  ];
+  // 로그인 후에만 네비게이션 노출.
+  const navItems = isLoggedIn
+    ? [
+        ...BASE_NAV,
+        { href: '/my-page', label: '마이페이지' },
+        ...(isAdmin ? [{ href: '/my-page/reports', label: '신고관리' }] : []),
+      ]
+    : [];
 
   const renderNav = (onNavigate?: () => void) => (
     <>
@@ -40,17 +51,17 @@ const Header = () => {
         </Link>
       ))}
       {isLoggedIn ? (
-        <button
+        <TextButton
           type="button"
+          active={false}
           onClick={() => {
             onNavigate?.();
             logout.mutate();
           }}
           disabled={logout.isPending}
-          className="cursor-pointer disabled:cursor-not-allowed"
         >
-          <TextButton active={false}>로그아웃</TextButton>
-        </button>
+          로그아웃
+        </TextButton>
       ) : (
         <Link href="/login" onClick={onNavigate}>
           <TextButton active={pathname === '/login'}>로그인</TextButton>

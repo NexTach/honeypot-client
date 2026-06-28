@@ -2,7 +2,8 @@ import Image from 'next/image';
 
 import { LogoLarge } from '@/shared/assets';
 import { cn } from '@/shared/lib';
-import { Button } from '@/shared/ui';
+
+import StartButton from './StartButton';
 
 const PROBLEMS = [
   {
@@ -135,7 +136,7 @@ const AboutPage = () => {
               태그 기반 검색을 통해 쉽게 재사용할 수 있도록 돕는 서비스입니다.
             </p>
           </div>
-          <Button className="w-full px-8 sm:w-auto">꿀통 시작하기</Button>
+          <StartButton />
         </div>
       </section>
 
@@ -291,7 +292,7 @@ const AboutPage = () => {
         <p className="text-caption text-ink font-mono leading-none uppercase">
           © 2026 꿀통 - GSM GIF Archive Service
         </p>
-        <Button className="w-full px-8 sm:w-auto">꿀통 시작하기</Button>
+        <StartButton />
       </footer>
     </div>
   );
