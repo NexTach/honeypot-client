@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 import { cn } from '@/shared/lib';
 
 type CardRatio = '9:16' | '1:1' | '16:9';
@@ -21,13 +19,9 @@ const ratioClass: Record<CardRatio, string> = {
 const Card = ({ src, alt = '', caption, ratio = '1:1', className }: CardProps) => (
   <div className={cn('flex flex-col', className)}>
     <div className={cn('relative w-full overflow-hidden', ratioClass[ratio])}>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(max-width: 768px) 50vw, 273px"
-        className="object-cover"
-      />
+      {/* GIF raw 는 SeaweedFS presigned URL 로 302 → next/image 옵티마이저가 외부 호스트를 거부하므로 plain img 사용 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
     </div>
     <div className="bg-cream w-full px-0.5 py-1">
       <p className="font-pretendard text-body text-ink-disabled truncate">{caption}</p>
