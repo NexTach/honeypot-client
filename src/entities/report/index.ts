@@ -1,6 +1,5 @@
 export { createReport, processReport } from './api/reportApi';
 export {
-  ACTION_LABELS,
   type CreateReportRequest,
   type ProcessReportRequest,
   type Report,

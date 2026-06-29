@@ -11,6 +11,3 @@ export const patch = async <T>(...args: Parameters<typeof axiosInstance.patch>) 
 
 export const post = async <T>(...args: Parameters<typeof axiosInstance.post>) =>
   await axiosInstance.post<T, T>(...args);
-
-export const put = async <T>(...args: Parameters<typeof axiosInstance.put>) =>
-  await axiosInstance.put<T, T>(...args);

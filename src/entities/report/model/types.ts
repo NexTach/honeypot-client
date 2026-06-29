@@ -39,9 +39,3 @@ export const STATUS_LABELS: Record<ReportStatus, string> = {
   NO_ISSUE: '문제 없음',
   BLINDED: '비공개 처리',
 };
-
-export const ACTION_LABELS: Record<ReportAction, string> = {
-  NO_ISSUE: '문제 없음',
-  BLIND: '비공개 처리',
-  DELETE: 'GIF 삭제',
-};
