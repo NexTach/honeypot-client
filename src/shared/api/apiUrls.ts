@@ -4,7 +4,8 @@ export const apiUrls = {
   gifs: {
     list: '/v1/gifs',
     detail: (id: number) => `/v1/gifs/${id}`,
-    raw: (id: number) => `/v1/gifs/${id}/raw`,
+    // Discord 등은 URL 확장자로 미디어 타입을 판별하므로 `.gif`로 끝나야 임베드된다.
+    raw: (id: number) => `/v1/gifs/${id}/raw.gif`,
     share: (id: number) => `/v1/gifs/${id}/share`,
     reports: (gifId: number) => `/v1/gifs/${gifId}/reports`,
     like: (gifId: number) => `/v1/gifs/${gifId}/like`,
