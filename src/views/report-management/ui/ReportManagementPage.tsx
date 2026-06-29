@@ -4,8 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { type Gif, GifListItem } from '@/entities/gif';
 import { type Report, ReportStats, STATUS_LABELS } from '@/entities/report';
-import { cn } from '@/shared/lib';
-import { Button, IconButton } from '@/shared/ui';
+import { Badge, Button, IconButton, SortDropdown } from '@/shared/ui';
 
 export interface ReportItem {
   report: Report;
@@ -30,67 +29,7 @@ const SORT_LABELS: Record<SortKey, string> = {
   oldest: '오래된순',
 };
 
-const ChevronDownIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M7 10l5 5 5-5H7z" />
-  </svg>
-);
-
-const StatusBadge = ({ report }: { report: Report }) => (
-  <span className="border-ink-disabled text-ink-disabled font-pretendard text-body shrink-0 border px-5 py-[15px] leading-none tracking-[-0.32px]">
-    {STATUS_LABELS[report.status]}
-  </span>
-);
-
-const SortDropdown = ({
-  value,
-  onChange,
-}: {
-  value: SortKey;
-  onChange: (key: SortKey) => void;
-}) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="relative shrink-0">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="border-ink bg-cream text-ink hover:bg-retro-gray flex h-[46px] items-center gap-2.5 border px-5 transition-colors"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        <span className="font-pretendard text-body leading-none tracking-[-0.32px]">
-          {SORT_LABELS[value]}
-        </span>
-        <ChevronDownIcon />
-      </button>
-
-      {open && (
-        <ul className="border-ink bg-cream absolute top-full right-0 z-10 mt-1 flex flex-col border">
-          {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-            <li key={key}>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(key);
-                  setOpen(false);
-                }}
-                className={cn(
-                  'hover:bg-retro-gray w-full px-5 py-2.5 text-left whitespace-nowrap transition-colors',
-                  'font-pretendard text-body leading-none tracking-[-0.32px]',
-                  key === value ? 'text-ink' : 'text-ink-disabled',
-                )}
-              >
-                {SORT_LABELS[key]}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
+const SORT_KEYS = Object.keys(SORT_LABELS) as SortKey[];
 
 const ReportManagementPage = ({ items }: ReportManagementPageProps) => {
   const [filter, setFilter] = useState<FilterKey>('pending');
@@ -143,7 +82,12 @@ const ReportManagementPage = ({ items }: ReportManagementPageProps) => {
             ))}
           </div>
 
-          <SortDropdown value={sort} onChange={setSort} />
+          <SortDropdown
+            value={sort}
+            options={SORT_KEYS}
+            getLabel={(key) => SORT_LABELS[key]}
+            onChange={setSort}
+          />
         </div>
 
         {/* 신고 리스트 */}
@@ -153,7 +97,7 @@ const ReportManagementPage = ({ items }: ReportManagementPageProps) => {
               key={item.report.id}
               gif={item.gif}
               href={`/my-page/reports/${item.report.id}`}
-              rightSlot={<StatusBadge report={item.report} />}
+              rightSlot={<Badge>{STATUS_LABELS[item.report.status]}</Badge>}
             />
           ))}
         </div>

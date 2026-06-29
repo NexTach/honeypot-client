@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import Link from 'next/link';
 
@@ -8,7 +8,7 @@ import { type Gif, useGetGifs } from '@/entities/gif';
 import { useGetTags } from '@/entities/tag';
 import { gifRawUrl } from '@/shared/api';
 import { cn } from '@/shared/lib';
-import { Card, Input } from '@/shared/ui';
+import { Card, Input, SortDropdown } from '@/shared/ui';
 
 const SORT_OPTIONS = ['인기순', '최신순', '오래된순'] as const;
 type SortOption = (typeof SORT_OPTIONS)[number];
@@ -26,67 +26,6 @@ const cardRatio = (gif: Gif): '9:16' | '1:1' | '16:9' => {
   if (r < 0.85) return '9:16';
   if (r > 1.3) return '16:9';
   return '1:1';
-};
-
-const SortDropdown = ({
-  value,
-  onChange,
-}: {
-  value: SortOption;
-  onChange: (v: SortOption) => void;
-}) => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative shrink-0">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="border-ink bg-cream font-pretendard text-body text-ink hover:bg-retro-gray flex h-[46px] cursor-pointer items-center gap-[10px] border px-5 leading-none tracking-[-0.32px] transition-colors"
-      >
-        <span>{value}</span>
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden
-          className={cn('transition-transform duration-200', open && 'rotate-180')}
-        >
-          <path d="M7 10l5 5 5-5H7z" />
-        </svg>
-      </button>
-      {open && (
-        <div className="border-ink bg-cream absolute top-full right-0 z-10 min-w-full border border-t-0">
-          {SORT_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => {
-                onChange(option);
-                setOpen(false);
-              }}
-              className={cn(
-                'font-pretendard text-body w-full cursor-pointer px-5 py-[15px] text-left leading-none tracking-[-0.32px] whitespace-nowrap transition-colors',
-                option === value ? 'bg-ink text-cream' : 'bg-cream text-ink hover:bg-retro-gray',
-              )}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 };
 
 const ExplorePage = () => {
@@ -139,7 +78,7 @@ const ExplorePage = () => {
               ))}
             </div>
           </div>
-          <SortDropdown value={sort} onChange={setSort} />
+          <SortDropdown value={sort} options={SORT_OPTIONS} onChange={setSort} />
         </div>
 
         {isLoading ? (

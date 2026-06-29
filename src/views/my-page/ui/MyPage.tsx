@@ -8,7 +8,7 @@ import { type Gif, GifListItem } from '@/entities/gif';
 import { type User, UserStats } from '@/entities/user';
 import { useLogout } from '@/features/auth';
 import { cn } from '@/shared/lib';
-import { Button } from '@/shared/ui';
+import { Badge, Button, SortDropdown } from '@/shared/ui';
 
 interface MyPageProps {
   user: User;
@@ -29,67 +29,7 @@ const SORT_LABELS: Record<SortKey, string> = {
   recent: '최신순',
 };
 
-const ChevronDownIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M7 10l5 5 5-5H7z" />
-  </svg>
-);
-
-const PublicBadge = ({ isPublic }: { isPublic: boolean }) => (
-  <span className="border-ink-disabled text-ink-disabled font-pretendard text-body shrink-0 border px-5 py-[15px] leading-none tracking-[-0.32px]">
-    {isPublic ? '공개' : '비공개'}
-  </span>
-);
-
-const SortDropdown = ({
-  value,
-  onChange,
-}: {
-  value: SortKey;
-  onChange: (key: SortKey) => void;
-}) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="relative shrink-0">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="border-ink bg-cream text-ink hover:bg-retro-gray flex h-[46px] items-center gap-2.5 border px-5 transition-colors"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        <span className="font-pretendard text-body leading-none tracking-[-0.32px]">
-          {SORT_LABELS[value]}
-        </span>
-        <ChevronDownIcon />
-      </button>
-
-      {open && (
-        <ul className="border-ink bg-cream absolute top-full right-0 z-10 mt-1 flex flex-col border">
-          {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-            <li key={key}>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(key);
-                  setOpen(false);
-                }}
-                className={cn(
-                  'hover:bg-retro-gray w-full px-5 py-2.5 text-left whitespace-nowrap transition-colors',
-                  'font-pretendard text-body leading-none tracking-[-0.32px]',
-                  key === value ? 'text-ink' : 'text-ink-disabled',
-                )}
-              >
-                {SORT_LABELS[key]}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
+const SORT_KEYS = Object.keys(SORT_LABELS) as SortKey[];
 
 const MyPage = ({ user, gifs }: MyPageProps) => {
   const [filter, setFilter] = useState<FilterKey>('all');
@@ -163,7 +103,12 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
             ))}
           </div>
 
-          <SortDropdown value={sort} onChange={setSort} />
+          <SortDropdown
+            value={sort}
+            options={SORT_KEYS}
+            getLabel={(key) => SORT_LABELS[key]}
+            onChange={setSort}
+          />
         </div>
 
         {/* GIF 리스트 */}
@@ -173,7 +118,7 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
               key={gif.id}
               gif={gif}
               href={`/gifs/${gif.id}`}
-              rightSlot={<PublicBadge isPublic={gif.isPublic} />}
+              rightSlot={<Badge>{gif.isPublic ? '공개' : '비공개'}</Badge>}
             />
           ))}
         </div>

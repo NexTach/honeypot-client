@@ -1,23 +1,12 @@
 import { cn } from '@/shared/lib';
 
+import ChevronDownIcon from './ChevronDownIcon';
+
 type IconButtonVariant = 'sort' | 'back';
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: IconButtonVariant;
 }
-
-const ChevronDownIcon = ({ className }: { className?: string }) => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className={className}
-    aria-hidden
-  >
-    <path d="M7 10l5 5 5-5H7z" />
-  </svg>
-);
 
 const ArrowLeftIcon = ({ className }: { className?: string }) => (
   <svg
