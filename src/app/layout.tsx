@@ -22,8 +22,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'project-title',
-  description: 'project-description',
+  title: '꿀통',
+  description: 'GSM의 모든 추억을 한곳에서',
 };
 
 const RootLayout = ({
