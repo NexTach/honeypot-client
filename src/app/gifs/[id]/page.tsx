@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import type { Gif } from '@/entities/gif';
-import { getServerProfile } from '@/entities/user/api/getServerProfile';
+import { getServerProfile } from '@/entities/user/index.server';
 import { apiUrls } from '@/shared/api';
 import { apiFetcher } from '@/shared/api/fetcher';
 import { GifDetailPage } from '@/views/gif-detail';

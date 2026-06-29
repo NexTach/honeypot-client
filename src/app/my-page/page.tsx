@@ -1,6 +1,6 @@
 import type { Gif, GifPage } from '@/entities/gif';
 import type { User } from '@/entities/user';
-import { requireProfile } from '@/entities/user/api/guards';
+import { requireProfile } from '@/entities/user/index.server';
 import { apiUrls } from '@/shared/api';
 import { apiFetcher } from '@/shared/api/fetcher';
 import { MyPage } from '@/views/my-page';

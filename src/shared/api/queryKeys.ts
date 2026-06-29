@@ -1,9 +1,7 @@
-import type { GifListParams } from '@/entities/gif';
-
 export const queryKeys = {
   gifs: {
     all: ['gifs'] as const,
-    list: (params: GifListParams) => ['gifs', 'list', params] as const,
+    list: <T extends object>(params: T) => ['gifs', 'list', params] as const,
     detail: (id: number) => ['gifs', 'detail', id] as const,
   },
   users: {

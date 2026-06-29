@@ -1,6 +1,6 @@
 import type { Gif } from '@/entities/gif';
 import type { ReportPage } from '@/entities/report';
-import { requireAdmin } from '@/entities/user/api/guards';
+import { requireAdmin } from '@/entities/user/index.server';
 import { apiUrls } from '@/shared/api';
 import { apiFetcher } from '@/shared/api/fetcher';
 import { type ReportItem, ReportManagementPage } from '@/views/report-management';
