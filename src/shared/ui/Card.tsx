@@ -19,7 +19,7 @@ const ratioClass: Record<CardRatio, string> = {
 const Card = ({ src, alt = '', caption, ratio = '1:1', className }: CardProps) => (
   <div className={cn('flex flex-col', className)}>
     <div className={cn('relative w-full overflow-hidden', ratioClass[ratio])}>
-      {/* GIF raw 는 SeaweedFS presigned URL 로 302 → next/image 옵티마이저가 외부 호스트를 거부하므로 plain img 사용 */}
+      {/* GIF 애니메이션은 next/image 최적화 이슈가 있어 plain img 사용 */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
     </div>

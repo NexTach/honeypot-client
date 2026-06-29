@@ -72,6 +72,9 @@ const GifDetailPage = ({ gif, isOwner }: GifDetailPageProps) => {
   // ponytail: 공유 URL = 원본 파일(raw) 링크. 전용 공유 도메인 생기면 교체.
   const rawSrc = `/api${apiUrls.gifs.raw(gif.id)}`;
 
+  // 비공개·블라인드 GIF의 raw는 미인증 외부에서 404 → 공유 가능할 때만 복사 노출.
+  const isShareable = gif.isPublic && !gif.blindedByAdmin;
+
   const handleCopy = () => {
     navigator.clipboard.writeText(`${window.location.origin}${rawSrc}`);
     postShare.mutate();
@@ -124,22 +127,24 @@ const GifDetailPage = ({ gif, isOwner }: GifDetailPageProps) => {
                 </button>
 
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  {/* URL 복사 박스 */}
-                  <div className="border-ink flex items-center gap-2 border px-3 py-2.5">
-                    <input
-                      readOnly
-                      value={rawSrc}
-                      className="font-pretendard text-body text-ink w-full min-w-0 bg-transparent outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleCopy}
-                      className="text-ink hover:text-ink-soft shrink-0 cursor-pointer"
-                      aria-label="GIF 주소 복사"
-                    >
-                      <CopyIcon />
-                    </button>
-                  </div>
+                  {/* URL 복사 박스 — 공개·비블라인드 GIF만 외부에서 열리므로 그때만 노출 */}
+                  {isShareable && (
+                    <div className="border-ink flex items-center gap-2 border px-3 py-2.5">
+                      <input
+                        readOnly
+                        value={rawSrc}
+                        className="font-pretendard text-body text-ink w-full min-w-0 bg-transparent outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleCopy}
+                        className="text-ink hover:text-ink-soft shrink-0 cursor-pointer"
+                        aria-label="GIF 주소 복사"
+                      >
+                        <CopyIcon />
+                      </button>
+                    </div>
+                  )}
 
                   {/* 액션 버튼: 본인이면 편집/삭제, 아니면 신고 */}
                   {isOwner ? (
