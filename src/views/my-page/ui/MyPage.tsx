@@ -172,6 +172,7 @@ const MyPage = ({ user, gifs }: MyPageProps) => {
             <GifListItem
               key={gif.id}
               gif={gif}
+              href={`/gifs/${gif.id}`}
               rightSlot={<PublicBadge isPublic={gif.isPublic} />}
             />
           ))}
