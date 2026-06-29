@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
     // 401 + 첫 시도 + reissue 요청이 아님 → 토큰 재발급 후 원요청 재시도.
     if (
       typeof window !== 'undefined' &&
-      status === 403 &&
+      status === 401 &&
       config &&
       !config.skipAuthRefresh &&
       !config.retried
@@ -87,7 +87,7 @@ axiosInstance.interceptors.response.use(
     }
 
     // 재발급 후에도 401(재시도 실패) → 복구 불가. reissue 자체 401은 위 catch가 처리.
-    if (typeof window !== 'undefined' && status === 403 && !config?.skipAuthRefresh) {
+    if (typeof window !== 'undefined' && status === 401 && !config?.skipAuthRefresh) {
       forceLogout();
     }
 
