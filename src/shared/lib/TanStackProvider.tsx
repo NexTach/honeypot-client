@@ -14,6 +14,7 @@ const TanStackProvider = ({ children }: PropsWithChildren) => {
         defaultOptions: {
           queries: {
             retry: false,
+            staleTime: 30_000,
           },
         },
       }),

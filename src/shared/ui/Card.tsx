@@ -36,6 +36,8 @@ const Card = ({ src, alt = '', caption, ratio = '1:1', className }: CardProps) =
         <img
           src={src}
           alt={alt}
+          loading="lazy"
+          decoding="async"
           onLoad={(e) =>
             setMeasured(ratioFromSize(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight))
           }

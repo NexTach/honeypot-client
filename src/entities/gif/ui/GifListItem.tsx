@@ -20,6 +20,8 @@ const GifListItem = ({ gif, rightSlot, href }: GifListItemProps) => {
       <img
         src={gifRawUrl(gif.id)}
         alt={gif.title}
+        loading="lazy"
+        decoding="async"
         className="border-ink bg-cream size-20 shrink-0 border object-cover sm:size-[120px]"
       />
 
