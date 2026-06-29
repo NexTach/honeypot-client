@@ -26,3 +26,7 @@ export const apiUrls = {
   },
   tags: '/v1/tags',
 } as const;
+
+// 외부(Discord 임베드 등)·표시용 절대 URL. /api rewrite 프록시(이중 홉) 건너뛰고 백엔드 직격.
+export const gifRawUrl = (id: number) =>
+  `${process.env.NEXT_PUBLIC_API_BASE_URL}${apiUrls.gifs.raw(id)}`;

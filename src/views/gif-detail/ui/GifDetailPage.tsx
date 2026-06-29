@@ -6,7 +6,7 @@ import { type Gif, GifInfo } from '@/entities/gif';
 import { useDeleteGif, useDeleteLike, usePostLike, usePostShare } from '@/features/gif-actions';
 import { GifEditForm } from '@/features/gif-edit';
 import { GifReportForm } from '@/features/gif-report';
-import { apiUrls } from '@/shared/api';
+import { gifRawUrl } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { IconButton } from '@/shared/ui';
 
@@ -70,13 +70,14 @@ const GifDetailPage = ({ gif, isOwner }: GifDetailPageProps) => {
   };
 
   // ponytail: 공유 URL = 원본 파일(raw) 링크. 전용 공유 도메인 생기면 교체.
-  const rawSrc = `/api${apiUrls.gifs.raw(gif.id)}`;
+  // 백엔드 절대경로 → Discord가 프록시 거치지 않고 백엔드 직격(이중 홉 제거).
+  const rawSrc = gifRawUrl(gif.id);
 
   // 비공개·블라인드 GIF의 raw는 미인증 외부에서 404 → 공유 가능할 때만 복사 노출.
   const isShareable = gif.isPublic && !gif.blindedByAdmin;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`${window.location.origin}${rawSrc}`);
+    navigator.clipboard.writeText(rawSrc);
     postShare.mutate();
   };
 

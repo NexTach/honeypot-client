@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 import { type Gif, useGetGifs } from '@/entities/gif';
 import { useGetTags } from '@/entities/tag';
-import { apiUrls } from '@/shared/api';
+import { gifRawUrl } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { Card, Input } from '@/shared/ui';
 
@@ -153,7 +153,7 @@ const ExplorePage = () => {
             {gifs.map((gif) => (
               <Link key={gif.id} href={`/gifs/${gif.id}`} className="mb-3 block break-inside-avoid">
                 <Card
-                  src={`/api${apiUrls.gifs.raw(gif.id)}`}
+                  src={gifRawUrl(gif.id)}
                   caption={gif.title}
                   ratio={cardRatio(gif)}
                   className="w-full"
